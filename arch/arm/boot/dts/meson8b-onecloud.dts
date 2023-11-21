@@ -8,6 +8,7 @@
 #include "meson8b.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/net/realtek-rtl8211f.h>
 
 / {
 	model = "Xunlei OneCloud";
@@ -60,7 +61,7 @@
 			gpios = <&gpio_ao GPIOAO_2 GPIO_ACTIVE_HIGH>;
 
 			default-state = "on";
-			linux,default-trigger = "default-on";
+			linux,default-trigger = "mmc1";
 		};
 
 		green {
@@ -68,7 +69,7 @@
 			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_HIGH>;
 
 			default-state = "off";
-			linux,default-trigger = "mmc1";
+			linux,default-trigger = "usb-host";
 		};
 
 		blue {
@@ -76,7 +77,7 @@
 			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
 
 			default-state = "off";
-			linux,default-trigger = "usb-host";
+			linux,default-trigger = "default-on";
 		};
 	};
 	
@@ -427,15 +428,20 @@
 
 			interrupt-parent = <&gpio_intc>;
 			interrupts = <17 IRQ_TYPE_LEVEL_LOW>; // GPIOH 3
+
+			/* absent */
+			realtek,led-0-mode = <0>;
+			/* green */
+			realtek,led-1-mode = <(RTL8211F_LED_LINK_10 | RTL8211F_LED_LINK_100 | RTL8211F_LED_LINK_1000 | RTL8211F_LED_EEE)>;
+			/* amber */
+			realtek,led-2-mode = <(RTL8211F_LED_LINK_1000 |RTL8211F_LED_ACTIVITY | RTL8211F_LED_EEE)>;
 		};
 	};
 };
 
 &usb0 {
 	status = "okay";
-	dr_mode = "otg";
-	usb-role-switch;
-	role-switch-default-mode = "host";
+	dr_mode = "host";
 };
 
 &usb0_phy {
